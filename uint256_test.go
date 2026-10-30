@@ -419,13 +419,13 @@ func TestMulDivOverflowRemAliasing(t *testing.T) {
 		wantQ, wantOverflow := new(Int).MulDivOverflow(x, y, d)
 		wantR := new(Int).MulMod(x, y, d)
 		for i, alias := range []func(x, y, d *Int) (z, m *Int){
-			func(x, y, d *Int) (*Int, *Int) { return x, new(Int) },
-			func(x, y, d *Int) (*Int, *Int) { return y, new(Int) },
-			func(x, y, d *Int) (*Int, *Int) { return d, new(Int) },
-			func(x, y, d *Int) (*Int, *Int) { return new(Int), x },
-			func(x, y, d *Int) (*Int, *Int) { return new(Int), y },
-			func(x, y, d *Int) (*Int, *Int) { return new(Int), d },
-			func(x, y, d *Int) (*Int, *Int) { z := new(Int); return z, z },
+			func(x, _, _ *Int) (*Int, *Int) { return x, new(Int) },
+			func(_, y, _ *Int) (*Int, *Int) { return y, new(Int) },
+			func(_, _, d *Int) (*Int, *Int) { return d, new(Int) },
+			func(x, _, _ *Int) (*Int, *Int) { return new(Int), x },
+			func(_, y, _ *Int) (*Int, *Int) { return new(Int), y },
+			func(_, _, d *Int) (*Int, *Int) { return new(Int), d },
+			func(_, _, _ *Int) (*Int, *Int) { z := new(Int); return z, z },
 		} {
 			x, y, d := x.Clone(), y.Clone(), d.Clone()
 			z, m := alias(x, y, d)
